@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestClient_Init(t *testing.T) {
+func TestClient_Init_VerifyParameters(t *testing.T) {
 	testCases := map[string]struct {
 		service client.Service
 		pxy     proxy.Proxy
@@ -31,8 +31,19 @@ func TestClient_Init(t *testing.T) {
 			service: (*UserService)(nil),
 			wantErr: client.ErrInvalidArgument,
 		},
-		"user service": {
+		"service, with nil Proxy": {
 			service: &UserService{},
+			pxy:     nil,
+			wantErr: client.ErrInvalidArgument,
+		},
+		"service, with typed nil Proxy": {
+			service: &UserService{},
+			pxy:     (*mockProxy)(nil),
+			wantErr: client.ErrInvalidArgument,
+		},
+		"service, proxy": {
+			service: &UserService{},
+			pxy:     &mockProxy{},
 			wantErr: nil,
 		},
 	}
@@ -41,11 +52,6 @@ func TestClient_Init(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := client.Init(tc.service, tc.pxy)
 			assert.ErrorIs(t, err, tc.wantErr)
-			if tc.wantErr != nil {
-				return
-			}
-			us, _ := tc.service.(*UserService)
-			_, _ = us.GetById(context.Background(), &GetByIdReq{})
 		})
 	}
 }
@@ -68,4 +74,12 @@ type GetByIdReq struct {
 }
 
 type GetByIdResp struct {
+}
+
+type mockProxy struct {
+}
+
+func (m *mockProxy) Invoke(ctx context.Context, req *proxy.Request) (resp *proxy.Response, err error) {
+	// TODO implement me
+	panic("implement me")
 }
