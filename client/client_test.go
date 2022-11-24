@@ -77,6 +77,17 @@ func TestClient_Init_VerifyService(t *testing.T) {
 			proxy:   &mockProxy{err: errors.New("failed to invoke RPC")},
 			wantErr: errors.New("failed to invoke RPC"),
 		},
+		"failed to decode response of service": {
+			service: &UserService{},
+			req:     &GetByIdReq{Id: 13},
+			resp:    &GetByIdResp{Name: "Go"},
+			proxy: &mockProxy{resp: &proxy.Response{
+				Result: func() []byte {
+					return []byte("nothing")
+				}(),
+			}},
+			wantErr: errors.New("decoding error"),
+		},
 		"success to invoke RPC and decode response": {
 			service: &UserService{},
 			req:     &GetByIdReq{Id: 13},
