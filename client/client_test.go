@@ -3,6 +3,7 @@ package client_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"testing"
 
 	"github.com/longyue0521/goRPC/client"
@@ -69,7 +70,14 @@ func TestClient_Init_VerifyService(t *testing.T) {
 		proxy   *mockProxy
 		wantErr error
 	}{
-		"normal case": {
+		"failed to invoke RPC": {
+			service: &UserService{},
+			req:     &GetByIdReq{Id: 13},
+			resp:    &GetByIdResp{Name: "Go"},
+			proxy:   &mockProxy{err: errors.New("failed to invoke RPC")},
+			wantErr: errors.New("failed to invoke RPC"),
+		},
+		"success to invoke RPC and decode response": {
 			service: &UserService{},
 			req:     &GetByIdReq{Id: 13},
 			resp:    &GetByIdResp{Name: "Go"},
@@ -84,10 +92,6 @@ func TestClient_Init_VerifyService(t *testing.T) {
 			}},
 			wantErr: nil,
 		},
-
-		// "Invoke error": {},
-		//
-		// "Decoding error": {},
 	}
 
 	for name, tc := range testCases {
