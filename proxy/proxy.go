@@ -14,5 +14,5 @@ type Request struct {
 }
 
 type Response struct {
-	results []byte
+	Result []byte
 }
