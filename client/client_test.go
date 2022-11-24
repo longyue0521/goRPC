@@ -140,22 +140,6 @@ type GetByIdResp struct {
 	Name string `json:"Name"`
 }
 
-type PlayerService struct {
-	GetById func(ctx context.Context, req *GetByPlayerIdReq) (*GetByPlayerIdResp, error)
-}
-
-func (u *PlayerService) Name() string {
-	return "player-service"
-}
-
-type GetByPlayerIdReq struct {
-	Id int64
-}
-
-type GetByPlayerIdResp struct {
-	Name string
-}
-
 type mockProxy struct {
 	req  *proxy.Request
 	resp *proxy.Response
