@@ -5,12 +5,14 @@ import (
 	"testing"
 
 	"github.com/longyue0521/goRPC/client"
+	"github.com/longyue0521/goRPC/proxy"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestClient_Proxy(t *testing.T) {
+func TestClient_Init(t *testing.T) {
 	testCases := map[string]struct {
 		service client.Service
+		pxy     proxy.Proxy
 		wantErr error
 	}{
 		"nil": {
@@ -37,7 +39,7 @@ func TestClient_Proxy(t *testing.T) {
 
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			err := client.InitClientProxy(tc.service)
+			err := client.Init(tc.service, tc.pxy)
 			assert.ErrorIs(t, err, tc.wantErr)
 			if tc.wantErr != nil {
 				return
