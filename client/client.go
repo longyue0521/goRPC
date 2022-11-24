@@ -1,7 +1,6 @@
 package client
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -16,18 +15,6 @@ var (
 
 type Service interface {
 	Name() string
-}
-
-func InitClientProxy(service Service) error {
-	return Init(service, &clientProxy{})
-}
-
-type clientProxy struct {
-}
-
-func (c *clientProxy) Invoke(ctx context.Context, req proxy.Request) (resp proxy.Response, err error) {
-	// TODO implement me
-	panic("implement me")
 }
 
 func Init(service Service, p proxy.Proxy) error {
