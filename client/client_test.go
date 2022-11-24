@@ -50,14 +50,14 @@ func TestClient_Init(t *testing.T) {
 	}
 }
 
-type UserService struct {
-	GetById func(ctx context.Context, req *GetByIdReq) (*GetByIdResp, error)
-}
-
 type Integer int
 
 func (n Integer) Name() string {
 	return "Integer"
+}
+
+type UserService struct {
+	GetById func(ctx context.Context, req *GetByIdReq) (*GetByIdResp, error)
 }
 
 func (u *UserService) Name() string {

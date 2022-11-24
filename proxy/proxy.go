@@ -3,7 +3,7 @@ package proxy
 import "context"
 
 type Proxy interface {
-	Invoke(ctx context.Context, req Request) (resp Response, err error)
+	Invoke(ctx context.Context, req *Request) (resp *Response, err error)
 }
 
 type Request struct {
@@ -14,4 +14,5 @@ type Request struct {
 }
 
 type Response struct {
+	results []byte
 }
