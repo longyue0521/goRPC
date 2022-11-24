@@ -1,10 +1,13 @@
 package client
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"reflect"
+
+	"github.com/longyue0521/goRPC/proxy"
 )
 
 var (
@@ -15,14 +18,19 @@ type Service interface {
 	Name() string
 }
 
-type Request struct {
-	ServiceName string
-	MethodName  string
-	// todo: ctx is ignored
-	Arg any
+func InitClientProxy(service Service) error {
+	return Init(service, &clientProxy{})
 }
 
-func InitClientProxy(service Service) error {
+type clientProxy struct {
+}
+
+func (c *clientProxy) Invoke(ctx context.Context, req proxy.Request) (resp proxy.Response, err error) {
+	// TODO implement me
+	panic("implement me")
+}
+
+func Init(service Service, p proxy.Proxy) error {
 
 	val := reflect.ValueOf(service)
 	typ := reflect.TypeOf(service)
@@ -49,7 +57,8 @@ func InitClientProxy(service Service) error {
 		}
 
 		fn := reflect.MakeFunc(fieldType.Type, func(args []reflect.Value) (results []reflect.Value) {
-			req := &Request{
+
+			req := &proxy.Request{
 				ServiceName: service.Name(),
 				MethodName:  fieldType.Name,
 				Arg:         args[1].Interface(),
