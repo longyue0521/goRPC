@@ -1,18 +1,12 @@
 package proxy
 
-import "context"
+import (
+	"context"
+
+	"github.com/longyue0521/goRPC/transport"
+)
 
 type Proxy interface {
-	Invoke(ctx context.Context, req *Request) (resp *Response, err error)
+	Invoke(ctx context.Context, req *transport.Request) (resp *transport.Response, err error)
 }
 
-type Request struct {
-	ServiceName string
-	MethodName  string
-	// todo: ctx is ignored
-	Arg any
-}
-
-type Response struct {
-	Result []byte
-}

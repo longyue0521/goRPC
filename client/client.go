@@ -8,6 +8,7 @@ import (
 	"reflect"
 
 	"github.com/longyue0521/goRPC/proxy"
+	"github.com/longyue0521/goRPC/transport"
 )
 
 var (
@@ -58,11 +59,13 @@ func Init(service Service, p proxy.Proxy) error {
 		fn := reflect.MakeFunc(fieldType.Type, func(args []reflect.Value) (results []reflect.Value) {
 
 			serviceRespType := fieldType.Type.Out(0)
-			
+
 			arg := args[1].Interface()
 			ctx, _ := args[0].Interface().(context.Context)
 
-			req := &proxy.Request{
+			req := &transport.Request{
+				SharedHeader: transport.SharedHeader{
+				},
 				ServiceName: service.Name(),
 				MethodName:  fieldType.Name,
 				Arg:         arg,
@@ -77,7 +80,7 @@ func Init(service Service, p proxy.Proxy) error {
 
 			// convert resp to XXXResp
 			serviceResp := reflect.New(serviceRespType).Interface()
-			err = json.Unmarshal(resp.Result, serviceResp)
+			err = json.Unmarshal(resp.Payload, serviceResp)
 			if err != nil {
 				results = append(results, reflect.New(serviceRespType).Elem())
 				results = append(results, reflect.ValueOf(ErrFailedToDecodeResponse))
